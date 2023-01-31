@@ -2,12 +2,35 @@ project:
   type: website
 
 website:
-  title: "ISSS608"
+  title: "Yiman's Data Analytics Journey"
   navbar:
     left:
-      - href: index.qmd
-        text: Home
-      - about.qmd
+      - text: "Hands-on Exercises"
+        menu: 
+          - text: "Hands-on Exercise 1"
+            href: inclass/inclass03/inclass03.qmd
+          - text: "Hands-on Exercise 2"
+            href: inclass/inclass03/inclass03.qmd
+          - text: "Hands-on Exercise 3"
+            href: inclass/inclass03/inclass03.qmd
+      
+      - text: "in-class Exercises"
+        menu: 
+          - text: "in-class Exercise 1"
+            href: inclass/inclass03/inclass03.qmd
+          - text: "in-class Exercise 2"
+            href: inclass/inclass03/inclass03.qmd
+          - text: "in-class Exercise 3"
+            href: inclass/inclass03/inclass03.qmd
+      
+      - text: "Take-home Exercises"
+        menu: 
+          - text: "Take-home Exercise 1"
+            href: TAKEHOME/TAKEHOME01/takehome01.qmd
+          - text: "Take-home Exercise 2"
+            href: inclass/inclass03/inclass03.qmd
+          - text: "Take-home Exercise 3"
+            href: inclass/inclass03/inclass03.qmd
 
 format:
   html:
@@ -16,4 +39,5 @@ format:
     toc: true
 
 editor: visual
+
 
