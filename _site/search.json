@@ -12,5 +12,12 @@
     "title": "About",
     "section": "",
     "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "inclass/inclass03/inclass03.html",
+    "href": "inclass/inclass03/inclass03.html",
+    "title": "in-class Exercise 3",
+    "section": "",
+    "text": "Installing and loading R packages\nTwo packages will be installed and loaded\nThey are ggraph and tidyverse\n\npacman::p_load(tidyverse,ggraph)\n\nimport data\n\nexam_data <- read.csv(\"data/Exam_data.csv\")\n\n\nggplot(data= exam_data,\n          aes(x = MATHS))+\n    geom_dotplot(dotsize = 0.5)"
   }
 ]
