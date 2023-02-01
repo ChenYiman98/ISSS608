@@ -1,0 +1,140 @@
+---
+title: "Takehome02"
+author: "Chen Yiman"
+date: 29 Jan 2023
+execute:
+  eval: true
+  echo: true
+  warning: false
+format: html
+editor: visual
+listing: 
+  contents: posts
+---
+
+creating data visualization beyond default: peer critique and visualization remake of take-home exercise 1
+
+They are ggraph and tidyverse
+
+|     |     |     |
+|-----|-----|-----|
+|     |     |     |
+|     |     |     |
+|     |     |     |
+|     |     |     |
+
+```{r}
+pacman::p_load(tidyverse, ggraph)
+
+```
+
+# Overview
+
+This take-home exercise is done based on a take-home exercise 1 submission prepared by a classmate.The peer submission will be critiqued in terms of clarity and aesthetics, and the oringinal design will be remade using data visualization principles and best practice learnt in lesson 1 and 2.
+
+The dataset: area \_age_sex_dwell202206.csv used in take-home exercise 1 and 2 is downloaded from Department of statistic of Singapore, Find Data-Population-Geographic Distribution-Population trends
+
+# Data Preparation
+
+Data preparation steps taken by the original author of the critiqued graph are listed here for easy reference. As this is not the focus of this exercise, i will not go into details about it.
+
+# Visualization critique and remake
+
+there are four graph in total in this take-home exercise 1 and they will be reviewed and remade in terms of clarity and aesthetics
+
+## Distribution1
+
+### critique
+
+#### Clarity
+
+#### Aesthetics
+
+### remake
+
+```{r}
+library(ggplot2)
+library(tidyverse)
+dat = read.csv(file='data/WORLD202301.csv', header=TRUE)
+head(dat)
+
+gather('Gender','Population',2:3)%>%
+
+
+data <- dat%>%
+  gather('Gender','Population',2:3)%>%
+  mutate(PopPerc = case_when(Gender =='M'~round(population/sum(population)*100,2),
+                             TRUE~-round(population/sum(population)*100,2),
+         signal = case_when(Gender =='M'~1,
+                            TRUE~-1))
+head(data)
+levels(data$Age)
+data$Age <- factor(data$Age,levels=unique(data$Age),ordered = TRUE)
+
+ggplot(data = dat)+
+  geom_bar(aes(x = Age y= PopPerc,fill= Gender),stat('identity')+
+  coord_flip()+
+  scale_fill_manual(name ='',values = c('darkred','steelblue'),labels = c('Female','male'))+
+  scale_y_continuous(breaks = seq(-10,10,1),
+                     labels = function(x)paste(x,'%'))+
+  labs(x='',y='Population(%)',
+       title = 'Population pyramid in June 2022',
+       subtitle = paste('total resident population in 2019:',format(sum(data$Population), big.mark=',')),
+       caption = 'source:population.net')+
+    cowplot::theme_cowplot()+
+    theme(axis.text.x = element_text(vjust = 0.5),
+          panel.grid.major = element_line(color = 'lightgrey',linetype = 'dashed'),
+          legend.position = 'top',
+          legend.justification = 'center')
+  
+                      
+
+```
+
+#### Clarity
+
+#### Aesthetics
+
+## Distribution2
+
+### critique
+
+#### Clarity
+
+#### Aesthetics
+
+### remake
+
+#### Clarity
+
+#### Aesthetics
+
+## Distribution3
+
+### critique
+
+#### Clarity
+
+#### Aesthetics
+
+### remake
+
+#### Clarity
+
+#### Aesthetics
+
+## Distribution4
+
+### critique
+
+#### Clarity
+
+#### Aesthetics
+
+### remake
+
+#### Clarity
+
+#### Aesthetics
+
+# Learning Point
