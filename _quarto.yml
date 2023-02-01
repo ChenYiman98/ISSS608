@@ -28,7 +28,7 @@ website:
           - text: "Take-home Exercise 1"
             href: TAKEHOME/TAKEHOME01/takehome01.qmd
           - text: "Take-home Exercise 2"
-            href: inclass/inclass03/inclass03.qmd
+            href: TAKEHOME/TAKEHOME02/takehome2.qmd
           - text: "Take-home Exercise 3"
             href: inclass/inclass03/inclass03.qmd
 

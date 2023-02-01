@@ -1,45 +1,24 @@
 [
   {
-    "objectID": "TAKEHOME/TAKEHOME02/takehome2.html",
-    "href": "TAKEHOME/TAKEHOME02/takehome2.html",
-    "title": "Takehome02",
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
     "section": "",
-    "text": "creating data visualization beyond default: peer critique and visualization remake of take-home exercise 1\nThey are ggraph and tidyverse"
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
   },
   {
-    "objectID": "TAKEHOME/TAKEHOME02/takehome2.html#distribution1",
-    "href": "TAKEHOME/TAKEHOME02/takehome2.html#distribution1",
-    "title": "Takehome02",
-    "section": "Distribution1",
-    "text": "Distribution1\n\ncritique\n\nClarity\n\n\nAesthetics\n\n\n\nremake\ndat = read_csv(file=‘data/WORLD202301.csv’, header=TRUE) head(dat)\ngather(‘Gender’,‘Population’,2:3)%>%\ndata <- dat%>% gather(‘Gender’,‘Population’,2:3)%>% mutate(PopPerc = case_when(Gender ==‘M’~round(population/sum(population)100,2), TRUE~-round(population/sum(population)100,2), signal = case_when(Gender ==‘M’~1, TRUE~-1)) head(data) levels(data\\(Age) data\\)Age <- factor(data\\(Age,levels=unique(data\\)Age),ordered = TRUE)\nggplot(data = dat)+ geom_bar(aes(x = Age y= PopPerc,fill= Gender),stat(‘identity’)+ coord_flip()+ scale_fill_manual(name =’‘,values = c(’darkred’,‘steelblue’),labels = c(‘Female’,‘male’))+ scale_y_continuous(breaks = seq(-10,10,1), labels = function(x)paste(x,‘%’))+ labs(x=’‘,y=’Population(%)’, title = ‘Population pyramid in June 2022’, subtitle = paste(‘total resident population in 2019:’,format(sum(data$Population), big.mark=‘,’)), caption = ‘source:population.net’)+ cowplot::theme_cowplot()+ theme(axis.text.x = element_text(vjust = 0.5), panel.grid.major = element_line(color = ‘lightgrey’,linetype = ‘dashed’), legend.position = ‘top’, legend.justification = ‘center’)\n```\n\nClarity\n\n\nAesthetics"
-  },
-  {
-    "objectID": "TAKEHOME/TAKEHOME02/takehome2.html#distribution2",
-    "href": "TAKEHOME/TAKEHOME02/takehome2.html#distribution2",
-    "title": "Takehome02",
-    "section": "Distribution2",
-    "text": "Distribution2\n\ncritique\n\nClarity\n\n\nAesthetics\n\n\n\nremake\n\nClarity\n\n\nAesthetics"
-  },
-  {
-    "objectID": "TAKEHOME/TAKEHOME02/takehome2.html#distribution3",
-    "href": "TAKEHOME/TAKEHOME02/takehome2.html#distribution3",
-    "title": "Takehome02",
-    "section": "Distribution3",
-    "text": "Distribution3\n\ncritique\n\nClarity\n\n\nAesthetics\n\n\n\nremake\n\nClarity\n\n\nAesthetics"
-  },
-  {
-    "objectID": "TAKEHOME/TAKEHOME02/takehome2.html#distribution4",
-    "href": "TAKEHOME/TAKEHOME02/takehome2.html#distribution4",
-    "title": "Takehome02",
-    "section": "Distribution4",
-    "text": "Distribution4\n\ncritique\n\nClarity\n\n\nAesthetics\n\n\n\nremake\n\nClarity\n\n\nAesthetics"
-  },
-  {
-    "objectID": "TAKEHOME/TAKEHOME03/TAKEHOME03.html",
-    "href": "TAKEHOME/TAKEHOME03/TAKEHOME03.html",
-    "title": "takehome03",
+    "objectID": "inclass/inclass03/inclass03.html",
+    "href": "inclass/inclass03/inclass03.html",
+    "title": "in-class Exercise 3",
     "section": "",
-    "text": "HHHH"
+    "text": "Installing and loading R packages\nTwo packages will be installed and loaded\nThey are ggraph and tidyverse\n\npacman::p_load(tidyverse,ggraph)\n\nimport data\n\nexam_data <- read.csv(\"data/Exam_data.csv\")\n\n\nggplot(data= exam_data,\n          aes(x = MATHS))+\n    geom_dotplot(dotsize = 0.5)"
+  },
+  {
+    "objectID": "TAKEHOME/TAKEHOME01/takehome01.html",
+    "href": "TAKEHOME/TAKEHOME01/takehome01.html",
+    "title": "Takehome01",
+    "section": "",
+    "text": "](images/image-400834270.png)\n\n\n\n\n\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "TAKEHOME/TAKEHOME02/takehome2.html#critique",
@@ -68,5 +47,12 @@
     "title": "Takehome02",
     "section": "Learning points",
     "text": "Learning points\nTableau and Rstudio are two different mindset visualization methods.\nfirst one is more visual and convenient to create presentation ready visualisations without any coding knowledge. This makes tableau much more accessible to the general public and beginners\nOn the other hand, visualisations in ‘R’ can achieve the same if not better visualisation that Tableau with much more granular control over the various attributes and objects shown. However the difficult part is coding knowledge required.\nIn the end, which tool to be used may depended on the people and the requirement."
+  },
+  {
+    "objectID": "TAKEHOME/TAKEHOME03/TAKEHOME03.html",
+    "href": "TAKEHOME/TAKEHOME03/TAKEHOME03.html",
+    "title": "takehome03",
+    "section": "",
+    "text": "HHHH"
   }
 ]

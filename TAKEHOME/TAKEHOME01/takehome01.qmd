@@ -1,5 +1,15 @@
 ---
-title: "0122VAA"
+title: "Takehome01"
+author: "Chen Yiman"
+date: 22 Jan 2023
+execute:
+  eval: true
+  echo: true
+  warning: false
+format: html
+editor: visual
+listing: 
+  contents: posts
 ---
 
 ![](images/image-968033826.png)
@@ -24,7 +34,7 @@ title: "0122VAA"
 
 ![](images/image-844029228.png)
 
-![](images/image-1025012016.png)](images/image-400834270.png)
+![](images/image-1025012016.png)\](images/image-400834270.png)
 
 ![](images/image-1618730900.png)
 
