@@ -12,10 +12,6 @@ listing:
   contents: posts
 ---
 
-creating data visualization beyond default: peer critique and visualization remake of take-home exercise 1
-
-They are ggraph and tidyverse
-
 |     |     |     |
 |-----|-----|-----|
 |     |     |     |
@@ -23,9 +19,7 @@ They are ggraph and tidyverse
 |     |     |     |
 |     |     |     |
 
-```{r}
-pacman::p_load(tidyverse, ggraph)
-
+```{}
 ```
 
 # Overview
@@ -42,99 +36,133 @@ Data preparation steps taken by the original author of the critiqued graph are l
 
 there are four graph in total in this take-home exercise 1 and they will be reviewed and remade in terms of clarity and aesthetics
 
-## Distribution1
+## Critique
 
-### critique
+### clarity
 
-#### Clarity
+-Title is not clear enough.from the title, users cannot tell what topic and info will be delivered.a possible title could be
 
-#### Aesthetics
+*Age sex pyramid in Singapore: Top 9 most populated planning area - June 2022*
 
-### remake
+-Bins plotted too tightly.there are too many bins from the whole view, it is hard for viewers to locate and identify a apecific figure and pattern.
+
+-Lack of indicators. there are not any reference line to help viewers to locate any detail of the figure
+
+### Aesthetics
+
+-Do not have any color combination. there are only blue and red with white background which can not attract any attention
+
+\-[Too little area between axis and graph]{.underline}. There is currently no segreation between the graph area and the axis. try to add color and other graph to make it easier for viewers to see
+
+### 
+
+## Libraries
+
+The R packages we'll use for this analysis are:
+
+-   [tidyverse](https://www.tidyverse.org/) - a family of modern R packages specially designed to support data science, analysis and communication task including creating static statistical graphs.
+
+-   [ggplot2](https://ggplot2.tidyverse.org/) - a system for declaratively creating graphics, based on The Grammar of Graphics (ggplot2 is included in the tidyverse package, i'm highlighting it here for emphasis, since it's our main tool for visualisation)
+
+-   [[ggthemes]{.underline}](https://jrnold.github.io/ggthemes/reference/index.html) - The ggthemes package provides extra themes, geoms, and scales for the ggplot2 package
+
+-   [[ggiraph]{.underline}](https://davidgohel.github.io/ggiraph/) - a package that provides interactive elements to ggplot like animations and tooltips (was not used after experimenting with it, leaving it here for reference)
+
+-   [[plotly]{.underline}](https://plotly.com/r/) - another package that provides interactive elements to ggplot (was not used after experimenting with it, leaving it here for reference)
+
+## Preparing the Data Set
+
+### loading Packages
 
 ```{r}
-library(ggplot2)
-library(tidyverse)
-dat = read.csv(file='data/WORLD202301.csv', header=TRUE)
-head(dat)
-
-gather('Gender','Population',2:3)%>%
-
-
-data <- dat%>%
-  gather('Gender','Population',2:3)%>%
-  mutate(PopPerc = case_when(Gender =='M'~round(population/sum(population)*100,2),
-                             TRUE~-round(population/sum(population)*100,2),
-         signal = case_when(Gender =='M'~1,
-                            TRUE~-1))
-head(data)
-levels(data$Age)
-data$Age <- factor(data$Age,levels=unique(data$Age),ordered = TRUE)
-
-ggplot(data = dat)+
-  geom_bar(aes(x = Age y= PopPerc,fill= Gender),stat('identity')+
-  coord_flip()+
-  scale_fill_manual(name ='',values = c('darkred','steelblue'),labels = c('Female','male'))+
-  scale_y_continuous(breaks = seq(-10,10,1),
-                     labels = function(x)paste(x,'%'))+
-  labs(x='',y='Population(%)',
-       title = 'Population pyramid in June 2022',
-       subtitle = paste('total resident population in 2019:',format(sum(data$Population), big.mark=',')),
-       caption = 'source:population.net')+
-    cowplot::theme_cowplot()+
-    theme(axis.text.x = element_text(vjust = 0.5),
-          panel.grid.major = element_line(color = 'lightgrey',linetype = 'dashed'),
-          legend.position = 'top',
-          legend.justification = 'center')
-  
-                      
-
+pacman::p_load(tidyverse, ggthemes, ggiraph, plotly)
 ```
 
-#### Clarity
+### Importing and tidying the data
 
-#### Aesthetics
+```{r}
+sg <- read_csv('data/respopagesexfa2022.csv')
+```
 
-## Distribution2
+After importing the original data into Rstudio, i want to check if there is any incorrect or messy
 
-### critique
+```{r}
+str(sg)
+```
 
-#### Clarity
+We can observe that there are more data than we really need, so i choose select function to select some columns.
 
-#### Aesthetics
+```{r}
+sgsubset <- sg %>% 
+  select(PA, AG, Sex, Pop)
+names(sgsubset) <-c('Planning_Area', 'Age_group', 'Gender', 'Population')
+```
 
-### remake
+Use level to check the order of factors
 
-#### Clarity
+```{r}
+levels(factor(sgsubset$Age_group))
+```
 
-#### Aesthetics
+I notice that "5_to_9" is out of place. Use `mutate()` and `arrange()` to correct this.
 
-## Distribution3
+```{r}
+order <- c("0_to_4", "5_to_9", "10_to_14", "15_to_19", "20_to_24", "25_to_29", "30_to_34", "35_to_39", "40_to_44", "45_to_49", "50_to_54", "55_to_59", "60_to_64", "65_to_69", "70_to_74", "75_to_79", "80_to_84", "85_to_89", "90_and_over")
 
-### critique
+sgsubset <- sgsubset %>%
+  mutate(Age_group =  factor(Age_group, levels = order)) %>%
+  arrange(Age_group)
 
-#### Clarity
+levels(sgsubset$Age_group)
+```
 
-#### Aesthetics
+### Preparation for visualisation
 
-### remake
+```{r}
+Check_PA <- sgsubset %>%
+  group_by(`Planning_Area`) %>%
+  summarise(sum_pop = sum(Population), .groups = 'drop') %>%
+  arrange(sum_pop,.by_group = TRUE) %>%
+  top_n(9) %>%
+  ungroup()
 
-#### Clarity
+Check_PA
+```
 
-#### Aesthetics
+```{r}
+sgsubsettop9 <- sgsubset %>% filter(`Planning_Area` %in% c('Bedok', 'Tampines', 'Jurong West', 'Sengkang', 'Woodlands', 'Hougang', 'Yishun', 'Choa Chu Kang', 'Punggol'))
+```
 
-## Distribution4
+### Visualising the Age-Sex Pyramid in a Trellis Display
 
-### critique
+Design X and Y
 
-#### Clarity
+```{r}
+agesexP <- ggplot(sgsubsettop9,aes(x = `Age_group`, y = Population,fill = Gender)) + 
+  geom_bar(data = subset(sgsubsettop9,Gender == 'Females'), stat = 'identity') + 
+  geom_bar(data = subset(sgsubsettop9,Gender == 'Males'), stat = 'identity', mapping = aes(y = -(Population))) + 
+  coord_flip() + 
+  facet_wrap(~`Planning_Area`,ncol = 3)
+```
 
-#### Aesthetics
+design
 
-### remake
+```{r}
+agesexP +
+  ggtitle("Singapore Age-Sex Pyramid (Age sex pyramid in Singapore: Top 9 most populated planning area - June 2022") + 
+  theme_classic() +
+  theme(plot.title = element_text(hjust = 0.5, vjust = 3)) + 
+  xlab("Age Group") + 
+  ylab("Population")+
+  scale_fill_manual(values=c('coral','cyan'))
+```
 
-#### Clarity
+## Learning points
 
-#### Aesthetics
+Tableau and Rstudio are two different mindset visualization methods.
 
-# Learning Point
+first one is more visual and convenient to create presentation ready visualisations without any coding knowledge. This makes tableau much more accessible to the general public and beginners
+
+On the other hand, visualisations in 'R' can achieve the same if not better visualisation that Tableau with much more granular control over the various attributes and objects shown. However the difficult part is coding knowledge required.
+
+In the end, which tool to be used may depended on the people and the requirement.
