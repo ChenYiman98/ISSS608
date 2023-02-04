@@ -7,6 +7,20 @@
     "text": "About this site\n\n1 + 1\n\n[1] 2"
   },
   {
+    "objectID": "inclass/inclass04/inclass04.html",
+    "href": "inclass/inclass04/inclass04.html",
+    "title": "inclass-ex-04",
+    "section": "",
+    "text": "pacman::p_load(tidyverse,patchwork,plotly,DT)"
+  },
+  {
+    "objectID": "inclass/inclass04/inclass04.html#visualizing-the-uncertainty-of-point-estimates",
+    "href": "inclass/inclass04/inclass04.html#visualizing-the-uncertainty-of-point-estimates",
+    "title": "inclass-ex-04",
+    "section": "Visualizing the uncertainty of point estimates",
+    "text": "Visualizing the uncertainty of point estimates\n\npacman::p_load(tidyverse, plotly, crosstalk, DT, ggdist, gganimate)\n\n\nexam <- read_csv(\"data/Exam_data.csv\")\n\n\nVisualizing the uncertainty of point estimates: ggplot2 methods\n\nmy_sum <- exam %>%\n  group_by(RACE) %>%\n  summarise(\n    n=n(),\n    mean =mean(MATHS),\n    sd = sd(MATHS)\n  )%>%\n  mutate(se = sd/sqrt(n-1))\n\n\nknitr::kable(head(my_sum), format = 'html')\n\n\n\n \n  \n    RACE \n    n \n    mean \n    sd \n    se \n  \n \n\n  \n    Chinese \n    193 \n    76.50777 \n    15.69040 \n    1.132357 \n  \n  \n    Indian \n    12 \n    60.66667 \n    23.35237 \n    7.041005 \n  \n  \n    Malay \n    108 \n    57.44444 \n    21.13478 \n    2.043177 \n  \n  \n    Others \n    9 \n    69.66667 \n    10.72381 \n    3.791438"
+  },
+  {
     "objectID": "inclass/inclass03/inclass03.html",
     "href": "inclass/inclass03/inclass03.html",
     "title": "in-class Exercise 3",

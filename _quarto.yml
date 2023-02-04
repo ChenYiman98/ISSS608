@@ -13,7 +13,7 @@ website:
             href: inclass/inclass03/inclass03.qmd
           - text: "Hands-on Exercise 3"
             href: inclass/inclass03/inclass03.qmd
-      
+            
       - text: "in-class Exercises"
         menu: 
           - text: "in-class Exercise 1"
@@ -22,6 +22,8 @@ website:
             href: inclass/inclass03/inclass03.qmd
           - text: "in-class Exercise 3"
             href: inclass/inclass03/inclass03.qmd
+          - text: "in-class Exercise 4"
+            href: inclass/inclass04/inclass04.qmd
       
       - text: "Take-home Exercises"
         menu: 

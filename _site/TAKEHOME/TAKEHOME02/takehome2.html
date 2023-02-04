@@ -212,6 +212,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <a class="dropdown-item" href="../../inclass/inclass03/inclass03.html">
  <span class="dropdown-text">in-class Exercise 3</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../../inclass/inclass04/inclass04.html">
+ <span class="dropdown-text">in-class Exercise 4</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item dropdown ">
@@ -327,7 +331,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tr>
 </tbody>
 </table>
-<pre><code></code></pre>
 <section id="overview" class="level1">
 <h1>Overview</h1>
 <p>This take-home exercise is done based on a take-home exercise 1 submission prepared by a classmate.The peer submission will be critiqued in terms of clarity and aesthetics, and the oringinal design will be remade using data visualization principles and best practice learnt in lesson 1 and 2.</p>
@@ -374,17 +377,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="loading-packages" class="level3">
 <h3 class="anchored" data-anchor-id="loading-packages">loading Packages</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, ggthemes, ggiraph, plotly)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, ggthemes, ggiraph, plotly)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="importing-and-tidying-the-data" class="level3">
 <h3 class="anchored" data-anchor-id="importing-and-tidying-the-data">Importing and tidying the data</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>sg <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">'data/respopagesexfa2022.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>sg <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">'data/respopagesexfa2022.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>After importing the original data into Rstudio, i want to check if there is any incorrect or messy</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(sg)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(sg)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>spc_tbl_ [75,696 × 7] (S3: spec_tbl_df/tbl_df/tbl/data.frame)
  $ PA  : chr [1:75696] "Ang Mo Kio" "Ang Mo Kio" "Ang Mo Kio" "Ang Mo Kio" ...
@@ -409,13 +412,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <p>We can observe that there are more data than we really need, so i choose select function to select some columns.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>sgsubset <span class="ot">&lt;-</span> sg <span class="sc">%&gt;%</span> </span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(PA, AG, Sex, Pop)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(sgsubset) <span class="ot">&lt;-</span><span class="fu">c</span>(<span class="st">'Planning_Area'</span>, <span class="st">'Age_group'</span>, <span class="st">'Gender'</span>, <span class="st">'Population'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>sgsubset <span class="ot">&lt;-</span> sg <span class="sc">%&gt;%</span> </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(PA, AG, Sex, Pop)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(sgsubset) <span class="ot">&lt;-</span><span class="fu">c</span>(<span class="st">'Planning_Area'</span>, <span class="st">'Age_group'</span>, <span class="st">'Gender'</span>, <span class="st">'Population'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Use level to check the order of factors</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(<span class="fu">factor</span>(sgsubset<span class="sc">$</span>Age_group))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(<span class="fu">factor</span>(sgsubset<span class="sc">$</span>Age_group))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "0_to_4"      "10_to_14"    "15_to_19"    "20_to_24"    "25_to_29"   
  [6] "30_to_34"    "35_to_39"    "40_to_44"    "45_to_49"    "5_to_9"     
@@ -425,13 +428,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <p>I notice that “5_to_9” is out of place. Use <code>mutate()</code> and <code>arrange()</code> to correct this.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>order <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"0_to_4"</span>, <span class="st">"5_to_9"</span>, <span class="st">"10_to_14"</span>, <span class="st">"15_to_19"</span>, <span class="st">"20_to_24"</span>, <span class="st">"25_to_29"</span>, <span class="st">"30_to_34"</span>, <span class="st">"35_to_39"</span>, <span class="st">"40_to_44"</span>, <span class="st">"45_to_49"</span>, <span class="st">"50_to_54"</span>, <span class="st">"55_to_59"</span>, <span class="st">"60_to_64"</span>, <span class="st">"65_to_69"</span>, <span class="st">"70_to_74"</span>, <span class="st">"75_to_79"</span>, <span class="st">"80_to_84"</span>, <span class="st">"85_to_89"</span>, <span class="st">"90_and_over"</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>sgsubset <span class="ot">&lt;-</span> sgsubset <span class="sc">%&gt;%</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Age_group =</span>  <span class="fu">factor</span>(Age_group, <span class="at">levels =</span> order)) <span class="sc">%&gt;%</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Age_group)</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(sgsubset<span class="sc">$</span>Age_group)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>order <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"0_to_4"</span>, <span class="st">"5_to_9"</span>, <span class="st">"10_to_14"</span>, <span class="st">"15_to_19"</span>, <span class="st">"20_to_24"</span>, <span class="st">"25_to_29"</span>, <span class="st">"30_to_34"</span>, <span class="st">"35_to_39"</span>, <span class="st">"40_to_44"</span>, <span class="st">"45_to_49"</span>, <span class="st">"50_to_54"</span>, <span class="st">"55_to_59"</span>, <span class="st">"60_to_64"</span>, <span class="st">"65_to_69"</span>, <span class="st">"70_to_74"</span>, <span class="st">"75_to_79"</span>, <span class="st">"80_to_84"</span>, <span class="st">"85_to_89"</span>, <span class="st">"90_and_over"</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>sgsubset <span class="ot">&lt;-</span> sgsubset <span class="sc">%&gt;%</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Age_group =</span>  <span class="fu">factor</span>(Age_group, <span class="at">levels =</span> order)) <span class="sc">%&gt;%</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Age_group)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(sgsubset<span class="sc">$</span>Age_group)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "0_to_4"      "5_to_9"      "10_to_14"    "15_to_19"    "20_to_24"   
  [6] "25_to_29"    "30_to_34"    "35_to_39"    "40_to_44"    "45_to_49"   
@@ -443,14 +446,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="preparation-for-visualisation" class="level3">
 <h3 class="anchored" data-anchor-id="preparation-for-visualisation">Preparation for visualisation</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>Check_PA <span class="ot">&lt;-</span> sgsubset <span class="sc">%&gt;%</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(<span class="st">`</span><span class="at">Planning_Area</span><span class="st">`</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">sum_pop =</span> <span class="fu">sum</span>(Population), <span class="at">.groups =</span> <span class="st">'drop'</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(sum_pop,<span class="at">.by_group =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">top_n</span>(<span class="dv">9</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>Check_PA</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>Check_PA <span class="ot">&lt;-</span> sgsubset <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(<span class="st">`</span><span class="at">Planning_Area</span><span class="st">`</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">sum_pop =</span> <span class="fu">sum</span>(Population), <span class="at">.groups =</span> <span class="st">'drop'</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(sum_pop,<span class="at">.by_group =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">top_n</span>(<span class="dv">9</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>Check_PA</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 9 × 2
   Planning_Area sum_pop
@@ -467,28 +470,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>sgsubsettop9 <span class="ot">&lt;-</span> sgsubset <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="st">`</span><span class="at">Planning_Area</span><span class="st">`</span> <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'Bedok'</span>, <span class="st">'Tampines'</span>, <span class="st">'Jurong West'</span>, <span class="st">'Sengkang'</span>, <span class="st">'Woodlands'</span>, <span class="st">'Hougang'</span>, <span class="st">'Yishun'</span>, <span class="st">'Choa Chu Kang'</span>, <span class="st">'Punggol'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>sgsubsettop9 <span class="ot">&lt;-</span> sgsubset <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="st">`</span><span class="at">Planning_Area</span><span class="st">`</span> <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'Bedok'</span>, <span class="st">'Tampines'</span>, <span class="st">'Jurong West'</span>, <span class="st">'Sengkang'</span>, <span class="st">'Woodlands'</span>, <span class="st">'Hougang'</span>, <span class="st">'Yishun'</span>, <span class="st">'Choa Chu Kang'</span>, <span class="st">'Punggol'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="visualising-the-age-sex-pyramid-in-a-trellis-display" class="level3">
 <h3 class="anchored" data-anchor-id="visualising-the-age-sex-pyramid-in-a-trellis-display">Visualising the Age-Sex Pyramid in a Trellis Display</h3>
 <p>Design X and Y</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>agesexP <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(sgsubsettop9,<span class="fu">aes</span>(<span class="at">x =</span> <span class="st">`</span><span class="at">Age_group</span><span class="st">`</span>, <span class="at">y =</span> Population,<span class="at">fill =</span> Gender)) <span class="sc">+</span> </span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">data =</span> <span class="fu">subset</span>(sgsubsettop9,Gender <span class="sc">==</span> <span class="st">'Females'</span>), <span class="at">stat =</span> <span class="st">'identity'</span>) <span class="sc">+</span> </span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">data =</span> <span class="fu">subset</span>(sgsubsettop9,Gender <span class="sc">==</span> <span class="st">'Males'</span>), <span class="at">stat =</span> <span class="st">'identity'</span>, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">y =</span> <span class="sc">-</span>(Population))) <span class="sc">+</span> </span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span> </span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span><span class="st">`</span><span class="at">Planning_Area</span><span class="st">`</span>,<span class="at">ncol =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>agesexP <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(sgsubsettop9,<span class="fu">aes</span>(<span class="at">x =</span> <span class="st">`</span><span class="at">Age_group</span><span class="st">`</span>, <span class="at">y =</span> Population,<span class="at">fill =</span> Gender)) <span class="sc">+</span> </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">data =</span> <span class="fu">subset</span>(sgsubsettop9,Gender <span class="sc">==</span> <span class="st">'Females'</span>), <span class="at">stat =</span> <span class="st">'identity'</span>) <span class="sc">+</span> </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">data =</span> <span class="fu">subset</span>(sgsubsettop9,Gender <span class="sc">==</span> <span class="st">'Males'</span>), <span class="at">stat =</span> <span class="st">'identity'</span>, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">y =</span> <span class="sc">-</span>(Population))) <span class="sc">+</span> </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span> </span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span><span class="st">`</span><span class="at">Planning_Area</span><span class="st">`</span>,<span class="at">ncol =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>design</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>agesexP <span class="sc">+</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Singapore Age-Sex Pyramid (Age sex pyramid in Singapore: Top 9 most populated planning area - June 2022"</span>) <span class="sc">+</span> </span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">vjust =</span> <span class="dv">3</span>)) <span class="sc">+</span> </span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Age Group"</span>) <span class="sc">+</span> </span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Population"</span>)<span class="sc">+</span></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values=</span><span class="fu">c</span>(<span class="st">'coral'</span>,<span class="st">'cyan'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>agesexP <span class="sc">+</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Singapore Age-Sex Pyramid (Age sex pyramid in Singapore: Top 9 most populated planning area - June 2022"</span>) <span class="sc">+</span> </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">vjust =</span> <span class="dv">3</span>)) <span class="sc">+</span> </span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Age Group"</span>) <span class="sc">+</span> </span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Population"</span>)<span class="sc">+</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values=</span><span class="fu">c</span>(<span class="st">'coral'</span>,<span class="st">'cyan'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="takehome2_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
 </div>

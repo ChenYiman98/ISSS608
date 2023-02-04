@@ -19,9 +19,6 @@ listing:
 |     |     |     |
 |     |     |     |
 
-```{}
-```
-
 # Overview
 
 This take-home exercise is done based on a take-home exercise 1 submission prepared by a classmate.The peer submission will be critiqued in terms of clarity and aesthetics, and the oringinal design will be remade using data visualization principles and best practice learnt in lesson 1 and 2.
