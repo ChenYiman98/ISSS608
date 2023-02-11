@@ -107,7 +107,4 @@ my_sum <- exam %>%
 knitr::kable(head(my_sum), format = 'html')
 ```
 
-```{}
-```
-
 \
