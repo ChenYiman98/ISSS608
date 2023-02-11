@@ -208,7 +208,7 @@ plot_ly(
 
 ```
 
-# **Hands-on Exercise 5.3: Building Heatmap for Visualising and Analysing Multivariate** 
+# **Hands-on Exercise 5.3: Building Heatmap for Visualising and Analysing Multivariate**
 
 ## **Data**Install and Launching R Packages
 
@@ -223,7 +223,7 @@ pacman::p_load(seriation, dendextend, heatmaply, tidyverse)
 wh <- read_csv("data/WHData-2018.csv")
 ```
 
-###  **Preparing the data**
+### **Preparing the data**
 
 ```{r}
 row.names(wh) <- wh$Country
@@ -238,7 +238,7 @@ wh1 <- dplyr::select(wh, c(3, 7:12))
 wh_matrix <- data.matrix(wh)
 ```
 
-##  **Static Heatmap**
+## **Static Heatmap**
 
 ```{r}
 wh_heatmap <- heatmap(wh_matrix,
@@ -272,7 +272,7 @@ heatmaply(wh_matrix[, -c(1, 2, 4, 5)])
 
 ## **Data trasformation**
 
-### **Scaling method** 
+### **Scaling method**
 
 ```{r}
 heatmaply(wh_matrix[, -c(1, 2, 4, 5)],
@@ -295,7 +295,7 @@ heatmaply(percentize(wh_matrix[, -c(1, 2, 4, 5)]))
 
 ## **Clustering algorithm**
 
-###  **Manual approach**
+### **Manual approach**
 
 ```{r}
 heatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),
@@ -354,7 +354,7 @@ heatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),
           colors = Blues)
 ```
 
-###  **The finishing touch**
+### **The finishing touch**
 
 ```{r}
 heatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),
