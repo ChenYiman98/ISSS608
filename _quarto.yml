@@ -25,7 +25,7 @@ website:
           - text: "in-class Exercise 4"
             href: inclass/inclass04/inclass04.qmd
           - text: "in-class Exercise 5"
-            href: inclass/inclass04/inclass05.qmd
+            href: inclass/inclass05/inclass05.qmd
             
       - text: "Take-home Exercises"
         menu: 
