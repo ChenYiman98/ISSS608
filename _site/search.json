@@ -28,48 +28,6 @@
     "text": "Installing and loading R packages\nTwo packages will be installed and loaded\nThey are ggraph and tidyverse\n\npacman::p_load(tidyverse,ggraph)\n\nimport data\n\nexam_data <- read.csv(\"data/Exam_data.csv\")\n\n\nggplot(data= exam_data,\n          aes(x = MATHS))+\n    geom_dotplot(dotsize = 0.5)"
   },
   {
-    "objectID": "TAKEHOME/TAKEHOME01/takehome01.html",
-    "href": "TAKEHOME/TAKEHOME01/takehome01.html",
-    "title": "Takehome01",
-    "section": "",
-    "text": "](images/image-400834270.png)\n\n\n\n\n\n\n\n\n\n\n\nNo matching items"
-  },
-  {
-    "objectID": "TAKEHOME/TAKEHOME02/takehome2.html#critique",
-    "href": "TAKEHOME/TAKEHOME02/takehome2.html#critique",
-    "title": "Takehome02",
-    "section": "Critique",
-    "text": "Critique\n\nclarity\n-Title is not clear enough.from the title, users cannot tell what topic and info will be delivered.a possible title could be\nAge sex pyramid in Singapore: Top 9 most populated planning area - June 2022\n-Bins plotted too tightly.there are too many bins from the whole view, it is hard for viewers to locate and identify a apecific figure and pattern.\n-Lack of indicators. there are not any reference line to help viewers to locate any detail of the figure\n\n\nAesthetics\n-Do not have any color combination. there are only blue and red with white background which can not attract any attention\n-Too little area between axis and graph. There is currently no segreation between the graph area and the axis. try to add color and other graph to make it easier for viewers to see"
-  },
-  {
-    "objectID": "TAKEHOME/TAKEHOME02/takehome2.html#libraries",
-    "href": "TAKEHOME/TAKEHOME02/takehome2.html#libraries",
-    "title": "Takehome02",
-    "section": "Libraries",
-    "text": "Libraries\nThe R packages we’ll use for this analysis are:\n\ntidyverse - a family of modern R packages specially designed to support data science, analysis and communication task including creating static statistical graphs.\nggplot2 - a system for declaratively creating graphics, based on The Grammar of Graphics (ggplot2 is included in the tidyverse package, i’m highlighting it here for emphasis, since it’s our main tool for visualisation)\nggthemes - The ggthemes package provides extra themes, geoms, and scales for the ggplot2 package\nggiraph - a package that provides interactive elements to ggplot like animations and tooltips (was not used after experimenting with it, leaving it here for reference)\nplotly - another package that provides interactive elements to ggplot (was not used after experimenting with it, leaving it here for reference)"
-  },
-  {
-    "objectID": "TAKEHOME/TAKEHOME02/takehome2.html#preparing-the-data-set",
-    "href": "TAKEHOME/TAKEHOME02/takehome2.html#preparing-the-data-set",
-    "title": "Takehome02",
-    "section": "Preparing the Data Set",
-    "text": "Preparing the Data Set\n\nloading Packages\n\npacman::p_load(tidyverse, ggthemes, ggiraph, plotly)\n\n\n\nImporting and tidying the data\n\nsg <- read_csv('data/respopagesexfa2022.csv')\n\nAfter importing the original data into Rstudio, i want to check if there is any incorrect or messy\n\nstr(sg)\n\nspc_tbl_ [75,696 × 7] (S3: spec_tbl_df/tbl_df/tbl/data.frame)\n $ PA  : chr [1:75696] \"Ang Mo Kio\" \"Ang Mo Kio\" \"Ang Mo Kio\" \"Ang Mo Kio\" ...\n $ SZ  : chr [1:75696] \"Ang Mo Kio Town Centre\" \"Ang Mo Kio Town Centre\" \"Ang Mo Kio Town Centre\" \"Ang Mo Kio Town Centre\" ...\n $ AG  : chr [1:75696] \"0_to_4\" \"0_to_4\" \"0_to_4\" \"0_to_4\" ...\n $ Sex : chr [1:75696] \"Males\" \"Males\" \"Males\" \"Males\" ...\n $ FA  : chr [1:75696] \"<= 60\" \">60 to 80\" \">80 to 100\" \">100 to 120\" ...\n $ Pop : num [1:75696] 0 10 20 60 10 0 0 0 20 50 ...\n $ Time: num [1:75696] 2022 2022 2022 2022 2022 ...\n - attr(*, \"spec\")=\n  .. cols(\n  ..   PA = col_character(),\n  ..   SZ = col_character(),\n  ..   AG = col_character(),\n  ..   Sex = col_character(),\n  ..   FA = col_character(),\n  ..   Pop = col_double(),\n  ..   Time = col_double()\n  .. )\n - attr(*, \"problems\")=<externalptr> \n\n\nWe can observe that there are more data than we really need, so i choose select function to select some columns.\n\nsgsubset <- sg %>% \n  select(PA, AG, Sex, Pop)\nnames(sgsubset) <-c('Planning_Area', 'Age_group', 'Gender', 'Population')\n\nUse level to check the order of factors\n\nlevels(factor(sgsubset$Age_group))\n\n [1] \"0_to_4\"      \"10_to_14\"    \"15_to_19\"    \"20_to_24\"    \"25_to_29\"   \n [6] \"30_to_34\"    \"35_to_39\"    \"40_to_44\"    \"45_to_49\"    \"5_to_9\"     \n[11] \"50_to_54\"    \"55_to_59\"    \"60_to_64\"    \"65_to_69\"    \"70_to_74\"   \n[16] \"75_to_79\"    \"80_to_84\"    \"85_to_89\"    \"90_and_over\"\n\n\nI notice that “5_to_9” is out of place. Use mutate() and arrange() to correct this.\n\norder <- c(\"0_to_4\", \"5_to_9\", \"10_to_14\", \"15_to_19\", \"20_to_24\", \"25_to_29\", \"30_to_34\", \"35_to_39\", \"40_to_44\", \"45_to_49\", \"50_to_54\", \"55_to_59\", \"60_to_64\", \"65_to_69\", \"70_to_74\", \"75_to_79\", \"80_to_84\", \"85_to_89\", \"90_and_over\")\n\nsgsubset <- sgsubset %>%\n  mutate(Age_group =  factor(Age_group, levels = order)) %>%\n  arrange(Age_group)\n\nlevels(sgsubset$Age_group)\n\n [1] \"0_to_4\"      \"5_to_9\"      \"10_to_14\"    \"15_to_19\"    \"20_to_24\"   \n [6] \"25_to_29\"    \"30_to_34\"    \"35_to_39\"    \"40_to_44\"    \"45_to_49\"   \n[11] \"50_to_54\"    \"55_to_59\"    \"60_to_64\"    \"65_to_69\"    \"70_to_74\"   \n[16] \"75_to_79\"    \"80_to_84\"    \"85_to_89\"    \"90_and_over\"\n\n\n\n\nPreparation for visualisation\n\nCheck_PA <- sgsubset %>%\n  group_by(`Planning_Area`) %>%\n  summarise(sum_pop = sum(Population), .groups = 'drop') %>%\n  arrange(sum_pop,.by_group = TRUE) %>%\n  top_n(9) %>%\n  ungroup()\n\nCheck_PA\n\n# A tibble: 9 × 2\n  Planning_Area sum_pop\n  <chr>           <dbl>\n1 Punggol        186250\n2 Choa Chu Kang  190460\n3 Yishun         222770\n4 Hougang        227720\n5 Woodlands      252720\n6 Sengkang       253050\n7 Jurong West    258520\n8 Tampines       265610\n9 Bedok          278870\n\n\n\nsgsubsettop9 <- sgsubset %>% filter(`Planning_Area` %in% c('Bedok', 'Tampines', 'Jurong West', 'Sengkang', 'Woodlands', 'Hougang', 'Yishun', 'Choa Chu Kang', 'Punggol'))\n\n\n\nVisualising the Age-Sex Pyramid in a Trellis Display\nDesign X and Y\n\nagesexP <- ggplot(sgsubsettop9,aes(x = `Age_group`, y = Population,fill = Gender)) + \n  geom_bar(data = subset(sgsubsettop9,Gender == 'Females'), stat = 'identity') + \n  geom_bar(data = subset(sgsubsettop9,Gender == 'Males'), stat = 'identity', mapping = aes(y = -(Population))) + \n  coord_flip() + \n  facet_wrap(~`Planning_Area`,ncol = 3)\n\ndesign\n\nagesexP +\n  ggtitle(\"Singapore Age-Sex Pyramid (Age sex pyramid in Singapore: Top 9 most populated planning area - June 2022\") + \n  theme_classic() +\n  theme(plot.title = element_text(hjust = 0.5, vjust = 3)) + \n  xlab(\"Age Group\") + \n  ylab(\"Population\")+\n  scale_fill_manual(values=c('coral','cyan'))"
-  },
-  {
-    "objectID": "TAKEHOME/TAKEHOME02/takehome2.html#learning-points",
-    "href": "TAKEHOME/TAKEHOME02/takehome2.html#learning-points",
-    "title": "Takehome02",
-    "section": "Learning points",
-    "text": "Learning points\nTableau and Rstudio are two different mindset visualization methods.\nfirst one is more visual and convenient to create presentation ready visualisations without any coding knowledge. This makes tableau much more accessible to the general public and beginners\nOn the other hand, visualisations in ‘R’ can achieve the same if not better visualisation that Tableau with much more granular control over the various attributes and objects shown. However the difficult part is coding knowledge required.\nIn the end, which tool to be used may depended on the people and the requirement."
-  },
-  {
-    "objectID": "TAKEHOME/TAKEHOME03/TAKEHOME03.html",
-    "href": "TAKEHOME/TAKEHOME03/TAKEHOME03.html",
-    "title": "takehome03",
-    "section": "",
-    "text": "HHHH"
-  },
-  {
     "objectID": "inclass/inclass05/inclass05.html",
     "href": "inclass/inclass05/inclass05.html",
     "title": "inclass05",
@@ -91,11 +49,11 @@
     "text": "Data Preparation\n\nImporting Data\n\npop_data <- read_csv(\"data/respopagsex2000to2018_tidy.csv\") \n\n\n\nPreparing the Data\n\nagpop_mutated <- pop_data %>%\n  mutate(`Year` = as.character(Year))%>%\n  spread(AG, Population) %>%\n  mutate(YOUNG = rowSums(.[4:8]))%>%\n  mutate(ACTIVE = rowSums(.[9:16]))  %>%\n  mutate(OLD = rowSums(.[17:21])) %>%\n  mutate(TOTAL = rowSums(.[22:24])) %>%\n  filter(Year == 2018)%>%\n  filter(TOTAL > 0)\n\n\n\nPlotting Ternary Diagram with R\n\nggtern(data=agpop_mutated,aes(x=YOUNG,y=ACTIVE, z=OLD)) +\n  geom_point()\n\n\n\n\n\nggtern(data=agpop_mutated, aes(x=YOUNG,y=ACTIVE, z=OLD)) +\n  geom_point() +\n  labs(title=\"Population structure, 2015\") +\n  theme_rgbw()\n\n\n\n\n\n\n\n\nlabel <- function(txt) {\n  list(\n    text = txt, \n    x = 0.1, y = 1,\n    ax = 0, ay = 0,\n    xref = \"paper\", yref = \"paper\", \n    align = \"center\",\n    font = list(family = \"serif\", size = 15, color = \"white\"),\n    bgcolor = \"#b3b3b3\", bordercolor = \"black\", borderwidth = 2\n  )\n}\n\naxis <- function(txt) {\n  list(\n    title = txt, tickformat = \".0%\", tickfont = list(size = 10)\n  )\n}\n\nternaryAxes <- list(\n  aaxis = axis(\"Young\"), \n  baxis = axis(\"Active\"), \n  caxis = axis(\"Old\")\n)\n\nplot_ly(\n  agpop_mutated, \n  a = ~YOUNG, \n  b = ~ACTIVE, \n  c = ~OLD, \n  color = I(\"black\"), \n  type = \"scatterternary\"\n) %>%\n  layout(\n    annotations = label(\"Ternary Markers\"), \n    ternary = ternaryAxes\n  )"
   },
   {
-    "objectID": "inclass/inclass05/inclass05.html#install-and-launching-r-packages",
-    "href": "inclass/inclass05/inclass05.html#install-and-launching-r-packages",
+    "objectID": "inclass/inclass05/inclass05.html#datainstall-and-launching-r-packages",
+    "href": "inclass/inclass05/inclass05.html#datainstall-and-launching-r-packages",
     "title": "inclass05",
-    "section": "Install and Launching R Packages",
-    "text": "Install and Launching R Packages\n\npacman::p_load(seriation, dendextend, heatmaply, tidyverse)"
+    "section": "DataInstall and Launching R Packages",
+    "text": "DataInstall and Launching R Packages\n\npacman::p_load(seriation, dendextend, heatmaply, tidyverse)"
   },
   {
     "objectID": "inclass/inclass05/inclass05.html#importing-and-preparing-the-data-set",
@@ -147,10 +105,45 @@
     "text": "Working with colour palettes\n\nheatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),\n          seriate = \"none\",\n          colors = Blues)\n\n\n\n\n\n\nThe finishing touch\n\nheatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),\n          Colv=NA,\n          seriate = \"none\",\n          colors = Blues,\n          k_row = 5,\n          margins = c(NA,200,60,NA),\n          fontsize_row = 4,\n          fontsize_col = 5,\n          main=\"World Happiness Score and Variables by Country, 2018 \\nDataTransformation using Normalise Method\",\n          xlab = \"World Happiness Indicators\",\n          ylab = \"World Countries\"\n          )"
   },
   {
-    "objectID": "inclass/inclass05/inclass05.html#datainstall-and-launching-r-packages",
-    "href": "inclass/inclass05/inclass05.html#datainstall-and-launching-r-packages",
-    "title": "inclass05",
-    "section": "DataInstall and Launching R Packages",
-    "text": "DataInstall and Launching R Packages\n\npacman::p_load(seriation, dendextend, heatmaply, tidyverse)"
+    "objectID": "TAKEHOME/TAKEHOME01/takehome01.html",
+    "href": "TAKEHOME/TAKEHOME01/takehome01.html",
+    "title": "Takehome01",
+    "section": "",
+    "text": "](images/image-400834270.png)\n\n\n\n\n\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "TAKEHOME/TAKEHOME02/takehome2.html#critique",
+    "href": "TAKEHOME/TAKEHOME02/takehome2.html#critique",
+    "title": "Takehome02",
+    "section": "Critique",
+    "text": "Critique\n\nclarity\n-Title is not clear enough.from the title, users cannot tell what topic and info will be delivered.a possible title could be\nAge sex pyramid in Singapore: Top 9 most populated planning area - June 2022\n-Bins plotted too tightly.there are too many bins from the whole view, it is hard for viewers to locate and identify a apecific figure and pattern.\n-Lack of indicators. there are not any reference line to help viewers to locate any detail of the figure\n\n\nAesthetics\n-Do not have any color combination. there are only blue and red with white background which can not attract any attention\n-Too little area between axis and graph. There is currently no segreation between the graph area and the axis. try to add color and other graph to make it easier for viewers to see"
+  },
+  {
+    "objectID": "TAKEHOME/TAKEHOME02/takehome2.html#libraries",
+    "href": "TAKEHOME/TAKEHOME02/takehome2.html#libraries",
+    "title": "Takehome02",
+    "section": "Libraries",
+    "text": "Libraries\nThe R packages we’ll use for this analysis are:\n\ntidyverse - a family of modern R packages specially designed to support data science, analysis and communication task including creating static statistical graphs.\nggplot2 - a system for declaratively creating graphics, based on The Grammar of Graphics (ggplot2 is included in the tidyverse package, i’m highlighting it here for emphasis, since it’s our main tool for visualisation)\nggthemes - The ggthemes package provides extra themes, geoms, and scales for the ggplot2 package\nggiraph - a package that provides interactive elements to ggplot like animations and tooltips (was not used after experimenting with it, leaving it here for reference)\nplotly - another package that provides interactive elements to ggplot (was not used after experimenting with it, leaving it here for reference)"
+  },
+  {
+    "objectID": "TAKEHOME/TAKEHOME02/takehome2.html#preparing-the-data-set",
+    "href": "TAKEHOME/TAKEHOME02/takehome2.html#preparing-the-data-set",
+    "title": "Takehome02",
+    "section": "Preparing the Data Set",
+    "text": "Preparing the Data Set\n\nloading Packages\n\npacman::p_load(tidyverse, ggthemes, ggiraph, plotly)\n\n\n\nImporting and tidying the data\n\nsg <- read_csv('data/respopagesexfa2022.csv')\n\nAfter importing the original data into Rstudio, i want to check if there is any incorrect or messy\n\nstr(sg)\n\nspc_tbl_ [75,696 × 7] (S3: spec_tbl_df/tbl_df/tbl/data.frame)\n $ PA  : chr [1:75696] \"Ang Mo Kio\" \"Ang Mo Kio\" \"Ang Mo Kio\" \"Ang Mo Kio\" ...\n $ SZ  : chr [1:75696] \"Ang Mo Kio Town Centre\" \"Ang Mo Kio Town Centre\" \"Ang Mo Kio Town Centre\" \"Ang Mo Kio Town Centre\" ...\n $ AG  : chr [1:75696] \"0_to_4\" \"0_to_4\" \"0_to_4\" \"0_to_4\" ...\n $ Sex : chr [1:75696] \"Males\" \"Males\" \"Males\" \"Males\" ...\n $ FA  : chr [1:75696] \"<= 60\" \">60 to 80\" \">80 to 100\" \">100 to 120\" ...\n $ Pop : num [1:75696] 0 10 20 60 10 0 0 0 20 50 ...\n $ Time: num [1:75696] 2022 2022 2022 2022 2022 ...\n - attr(*, \"spec\")=\n  .. cols(\n  ..   PA = col_character(),\n  ..   SZ = col_character(),\n  ..   AG = col_character(),\n  ..   Sex = col_character(),\n  ..   FA = col_character(),\n  ..   Pop = col_double(),\n  ..   Time = col_double()\n  .. )\n - attr(*, \"problems\")=<externalptr> \n\n\nWe can observe that there are more data than we really need, so i choose select function to select some columns.\n\nsgsubset <- sg %>% \n  select(PA, AG, Sex, Pop)\nnames(sgsubset) <-c('Planning_Area', 'Age_group', 'Gender', 'Population')\n\nUse level to check the order of factors\n\nlevels(factor(sgsubset$Age_group))\n\n [1] \"0_to_4\"      \"10_to_14\"    \"15_to_19\"    \"20_to_24\"    \"25_to_29\"   \n [6] \"30_to_34\"    \"35_to_39\"    \"40_to_44\"    \"45_to_49\"    \"5_to_9\"     \n[11] \"50_to_54\"    \"55_to_59\"    \"60_to_64\"    \"65_to_69\"    \"70_to_74\"   \n[16] \"75_to_79\"    \"80_to_84\"    \"85_to_89\"    \"90_and_over\"\n\n\nI notice that “5_to_9” is out of place. Use mutate() and arrange() to correct this.\n\norder <- c(\"0_to_4\", \"5_to_9\", \"10_to_14\", \"15_to_19\", \"20_to_24\", \"25_to_29\", \"30_to_34\", \"35_to_39\", \"40_to_44\", \"45_to_49\", \"50_to_54\", \"55_to_59\", \"60_to_64\", \"65_to_69\", \"70_to_74\", \"75_to_79\", \"80_to_84\", \"85_to_89\", \"90_and_over\")\n\nsgsubset <- sgsubset %>%\n  mutate(Age_group =  factor(Age_group, levels = order)) %>%\n  arrange(Age_group)\n\nlevels(sgsubset$Age_group)\n\n [1] \"0_to_4\"      \"5_to_9\"      \"10_to_14\"    \"15_to_19\"    \"20_to_24\"   \n [6] \"25_to_29\"    \"30_to_34\"    \"35_to_39\"    \"40_to_44\"    \"45_to_49\"   \n[11] \"50_to_54\"    \"55_to_59\"    \"60_to_64\"    \"65_to_69\"    \"70_to_74\"   \n[16] \"75_to_79\"    \"80_to_84\"    \"85_to_89\"    \"90_and_over\"\n\n\n\n\nPreparation for visualisation\n\nCheck_PA <- sgsubset %>%\n  group_by(`Planning_Area`) %>%\n  summarise(sum_pop = sum(Population), .groups = 'drop') %>%\n  arrange(sum_pop,.by_group = TRUE) %>%\n  top_n(9) %>%\n  ungroup()\n\nCheck_PA\n\n# A tibble: 9 × 2\n  Planning_Area sum_pop\n  <chr>           <dbl>\n1 Punggol        186250\n2 Choa Chu Kang  190460\n3 Yishun         222770\n4 Hougang        227720\n5 Woodlands      252720\n6 Sengkang       253050\n7 Jurong West    258520\n8 Tampines       265610\n9 Bedok          278870\n\n\n\nsgsubsettop9 <- sgsubset %>% filter(`Planning_Area` %in% c('Bedok', 'Tampines', 'Jurong West', 'Sengkang', 'Woodlands', 'Hougang', 'Yishun', 'Choa Chu Kang', 'Punggol'))\n\n\n\nVisualising the Age-Sex Pyramid in a Trellis Display\nDesign X and Y\n\nagesexP <- ggplot(sgsubsettop9,aes(x = `Age_group`, y = Population,fill = Gender)) + \n  geom_bar(data = subset(sgsubsettop9,Gender == 'Females'), stat = 'identity') + \n  geom_bar(data = subset(sgsubsettop9,Gender == 'Males'), stat = 'identity', mapping = aes(y = -(Population))) + \n  coord_flip() + \n  facet_wrap(~`Planning_Area`,ncol = 3)\n\ndesign\n\nagesexP +\n  ggtitle(\"Singapore Age-Sex Pyramid (Age sex pyramid in Singapore: Top 9 most populated planning area - June 2022\") + \n  theme_classic() +\n  theme(plot.title = element_text(hjust = 0.5, vjust = 3)) + \n  xlab(\"Age Group\") + \n  ylab(\"Population\")+\n  scale_fill_manual(values=c('coral','cyan'))"
+  },
+  {
+    "objectID": "TAKEHOME/TAKEHOME02/takehome2.html#learning-points",
+    "href": "TAKEHOME/TAKEHOME02/takehome2.html#learning-points",
+    "title": "Takehome02",
+    "section": "Learning points",
+    "text": "Learning points\nTableau and Rstudio are two different mindset visualization methods.\nfirst one is more visual and convenient to create presentation ready visualisations without any coding knowledge. This makes tableau much more accessible to the general public and beginners\nOn the other hand, visualisations in ‘R’ can achieve the same if not better visualisation that Tableau with much more granular control over the various attributes and objects shown. However the difficult part is coding knowledge required.\nIn the end, which tool to be used may depended on the people and the requirement."
+  },
+  {
+    "objectID": "TAKEHOME/TAKEHOME03/TAKEHOME03.html",
+    "href": "TAKEHOME/TAKEHOME03/TAKEHOME03.html",
+    "title": "takehome03",
+    "section": "",
+    "text": "HHHH"
   }
 ]
