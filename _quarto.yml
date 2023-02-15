@@ -34,7 +34,7 @@ website:
           - text: "Take-home Exercise 2"
             href: TAKEHOME/TAKEHOME02/takehome2.qmd
           - text: "Take-home Exercise 3"
-            href: inclass/inclass03/inclass03.qmd
+            href: TAKEHOME/TAKEHOME03/TAKEHOME03.qmd
 
 format:
   html:
