@@ -1,0 +1,61 @@
+---
+title: "inclass07"
+---
+
+```{r}
+pacman::p_load(sf,tmap,tidyverse) #simple feature
+```
+
+Geospatial Data Wrangling
+
+```{r}
+sgpools <- read_csv("data/aspatial/SGPools_svy21.csv")
+```
+
+```{r}
+list(sgpools)
+```
+
+```{r}
+sgpool_sf <- sf_as_sf(sgpools,
+         coords = c("XCOORD","YCOORD"),
+         crs = 3414)
+```
+
+```{r}
+list(sgpools_sf)
+view(sgpools_sf)
+view(sgpools)
+```
+
+Draw Proportional Symbol Map\
+
+```{r}
+tmap_mode("view")
+```
+
+## Start With A Interactive Point Map
+
+```{r}
+tm_shape(sgpools_sf)+
+tm_bubbles(col = "red",
+           size = 1,
+           border.col = "lightblue",
+           border.lwd = 1)
+```
+
+## make it proportinal
+
+```{r}
+library("RColorBrewer")
+display.brewer.all()
+```
+
+```{r}
+tm_shape(sgpools_sf)+
+tm_bubbles(col = "mediumpurple",
+           size = "Gp1Gp2 Winnings",
+           border.col = "",
+           border.lwd = 1)
+
+```

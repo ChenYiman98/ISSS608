@@ -1,0 +1,147 @@
+---
+title: "takehome03"
+author: "Chen Yiman"
+date: 15 February 2023
+date-modified: "r Sys.Date"
+execute:
+  eval: true
+  echo: true
+  warning: false
+format: html
+editor: visual
+listing: 
+  contents: posts
+---
+
+
+# Overview
+
+This take-home exercise required students to use appropriate analytical visualization techniques to uncover the salient pattern of the resale prices of public housing property by residential towns and estates in Singapore .
+
+For the purpose of reveal pattern and insight, we will focus on flat which type is 3-room , 4-room and 5-room types.And the period we will focus on is 2022
+
+## Loading libraries
+
+
+```{r}
+pacman::p_load(dplyr, tidyverse, DT, ggplot2, ggiraph, 
+               ggstatsplot, patchwork, plotly, gganimate, 
+               ggthemes, corrplot, heatmaply,lubridate,scales,ggrepel,ggpubr,BiocManager,ggbetweenstats)
+```
+
+
+## Loading data
+
+*Resale flat princes based on registration date from Jan-2017 onwards* would be used to prepare the analytical visualisation. It is downloaded from [Data.gov.sg](https://data.gov.sg/).
+
+
+```{r}
+resale_data <- read_csv("data/resale-flat-prices-based-on-registration-date-drom-jan-2017-onwards.csv")
+```
+
+```{r}
+
+resale_data <- read_csv("Data/resale-flat-prices-based-on-registration-date-from-jan-2017-onwards.csv")
+
+DT::datatable(head(resale_data,100)) 
+
+```
+
+
+change the data format
+
+we can see the month is in format of "YYYY-MM", it is hard to recognize, so we change the format to "YYYY-MM-DD" by using the function of as.Date and in format of "%Y-%m-%d"
+
+
+```{r}
+resale_data <- resale_data %>% 
+  mutate(month = as.Date(paste0(month, "-01",sep = ""), 
+                         format = "%Y - %m - %d"))
+
+```
+
+
+this code add "-01" to every year and month to create a complete "YYYY-MM-DD" format. then use the function as.date to convert the date into string in proper format\
+
+
+```{r}
+resale_345room_2022 <- resale_data %>% 
+  filter(flat_type %in% c("3 ROOM", "4 ROOM", "5 ROOM"), 
+         year(month) == 2022) %>%
+  mutate("unit_price_sqm" = resale_price/floor_area_sqm)
+```
+
+```{r}
+DT::datatable(head(resale_345room_2022,50))
+```
+
+
+# Data Analysis and Visualization
+
+## Data Analysis
+
+### Pattern of Monthly Average Resale Price by Flat Type
+
+
+```{r}
+# Group data by flat type
+resale_345room_2022_grouped <- resale_345room_2022 %>%
+  group_by(flat_type,month) %>%
+  summarise(resale_price = mean(resale_price)/1000)
+
+# Plot monthly trend by flat type
+ggplot(resale_345room_2022_grouped,aes(x=month, y= resale_price,color = flat_type))+
+  geom_line()+
+  scale_x_date(date_labels = "%b",date_breaks = "1 months")+
+  labs(x = "Month", y =  "Resale Price (SGD, thousands)", title =  "Pattern of Monthly Average Resale Price by Flat Type (2022)")+
+  theme_classic2()
+  
+
+```
+
+
+### Pattern of Average Price per Sqm by Flat Type
+
+
+```{r}
+
+```
+
+
+### **pattern of Resale Flats by towns**
+
+
+```{r}
+# Group the data by flat type and month, and calculate the average unit resale price
+resale_avg <- resale_345room_2022 %>%
+  group_by(flat_type, month) %>%
+  summarise(avg_resale_price = mean(resale_price)/mean(floor_area_sqm))
+
+# Plot the line chart with dynamic tooltips using ggplot and plotly
+p <- ggplot(resale_avg, aes(x = month, y = avg_resale_price, color = flat_type, group = flat_type)) +
+  geom_line() +
+  scale_x_date(date_labels = "%b", date_breaks = "1 months") +
+  scale_y_continuous(labels = function(x) paste0(x/1000, "k")) +
+  labs(x = "Month", y = "Unit Price", title = "Average Unit Resale Price Trend by Flat Type (2022)") +
+  theme_bw()
+
+ggplotly(p, tooltip = c("month", "avg_resale_price"))
+```
+
+
+\
+
+### Data Visualization
+
+ggbetweenstats
+
+### **One-way ANOVA test on resale Price by Flat Type**
+
+### **One-way ANOVA test on Unit Price / sqm by Flat Type**
+
+### **Resale Price by Town and Flat Type**
+
+### visualization of uncertainty
+
+# **Conclusions and Takeaways**
+

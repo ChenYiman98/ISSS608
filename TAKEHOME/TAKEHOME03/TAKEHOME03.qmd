@@ -24,7 +24,7 @@ For the purpose of reveal pattern and insight, we will focus on flat which type 
 ```{r}
 pacman::p_load(dplyr, tidyverse, DT, ggplot2, ggiraph, 
                ggstatsplot, patchwork, plotly, gganimate, 
-               ggthemes, corrplot, heatmaply,lubridate,scales,ggrepel,ggpubr)
+               ggthemes, corrplot, heatmaply,lubridate,scales,ggrepel,ggpubr,ggbetweenstats,ggplot)
 ```
 
 ## Loading data
@@ -33,9 +33,9 @@ pacman::p_load(dplyr, tidyverse, DT, ggplot2, ggiraph,
 
 ```{r}
 
-resale_data <- read_csv("Data/resale-flat-prices-based-on-registration-date-from-jan-2017-onwards.csv")
+resale_data <- read_csv("data/resale-flat-prices-based-on-registration-date-from-jan-2017-onwards.csv")
+DT::datatable(head(resale_data,20))
 
-DT::datatable(head(resale_data,100)) 
 
 ```
 
@@ -50,48 +50,82 @@ resale_data <- resale_data %>%
 
 ```
 
-this code add "-01" to every year and month to create a complete "YYYY-MM-DD" format. then use the function as.date to convert the date into string in proper format\
-
 ```{r}
-resale_345room_2022 <- resale_data %>% 
-  filter(flat_type %in% c("3 ROOM", "4 ROOM", "5 ROOM"), 
-         year(month) == 2022) %>%
-  mutate("unit_price_sqm" = resale_price/floor_area_sqm)
+view(resale_data)
 ```
 
+this code add "-01" to every year and month to create a complete "YYYY-MM-DD" format. then use the function as.date to convert the date into string with the format of yyyy-mm-dd\
+
 ```{r}
-DT::datatable(head(resale_345room_2022,50))
+resale_345room_2022 <- resale_data %>%
+  filter(flat_type %in% c("3 ROOM","4 ROOM","5 ROOM"),
+         year(month) == 2022) %>%
+  mutate("unit_price_sqm" = resale_price/floor_area_sqm)
+view(resale_345room_2022)       
 ```
 
 # Data Analysis and Visualization
 
 ## Data Analysis
 
-### Pattern of Monthly Average Resale Price by Flat Type
+### description analysis
+
+first, we want to have a look at the overview of the price of three types rooms. how high or low the price will reach? what is the mean price of each room? can we compare them directly?
+
+the box plot can show the max, min, average price in box figure which is direct and easy to compare the 3 different pattern. so we plot the box plot as first step.
 
 ```{r}
-# Group data by flat type
-resale_345room_2022_grouped <- resale_345room_2022 %>%
-  group_by(flat_type,month) %>%
+view(paletteer::palettes_d_names)
+```
+
+```{r}
+ggbetweenstats(
+  data = resale_345room_2022,
+  x = flat_type,
+  y = unit_price_sqm,
+  title = "distribution of resale price per sqm by flat type",
+)
+
+```
+
+From the picture we can see that the mean of flat price is almost the same within 3 types of house.while the max point of the house price appeared in 4 room flat.
+
+for average price , no matter how many rooms are there, the prices are not fluctuate. while for the 4 rooms flat, there shows a higher max point which reflect some demand and aspiration for 4-room flat in the market. so we can dig deeper towards economic and demographic feature towards this type to find out the reason why the max point of the average price can be high
+
+### Pattern of Monthly Average Resale Price by Flat Type
+
+after overviewing , we want to know the price trend throughout the year. in order to review the time series, we choose line graph which is suitable to show the path of price.
+
+resale price of 5 room is the highest, that of 4 room is the middle, while that of 3 room is the lowest. this may related to the total sqm of the flat, normally. the more room there is, the larger the total sqm is.
+
+the overview trend of Singapore's flat resale price is going up, at Oct reach the highest through the year, then it began going down, but still higher than the start of the year.We can look deeper into October's economic and all factors which will influence flats' resale price
+
+```{r}
+resale_345room_2022_grouped<-resale_345room_2022 %>%
+  group_by(flat_type,month)%>%
   summarise(resale_price = mean(resale_price)/1000)
 
-# Plot monthly trend by flat type
-ggplot(resale_345room_2022_grouped,aes(x=month, y= resale_price,color = flat_type))+
+ggplot(data = resale_345room_2022_grouped,
+       aes(x=month,y = resale_price,color = flat_type))+
   geom_line()+
   scale_x_date(date_labels = "%b",date_breaks = "1 months")+
   labs(x = "Month", y =  "Resale Price (SGD, thousands)", title =  "Pattern of Monthly Average Resale Price by Flat Type (2022)")+
-  theme_classic2()
+  theme_calc()
   
-
 ```
 
-### Pattern of Average Price per Sqm by Flat Type
-
-```{r}
-
-```
+### Pattern of Average Price per Sqm by Town
 
 ### **pattern of Resale Flats by towns**
+
+```{r}
+resale_avg<- resale_345room_2022 %>%
+  group_by(month,flat_type)%>%
+  summarise(avg_resale_price = mean(resale_price)/mean(floor_area_sqm))
+
+ggplot(data = resale_avg,aes(area = block*floor_area_sqm ,fill = avg_resale_price))+
+  geom_treemap()
+```
 
 ```{r}
 # Group the data by flat type and month, and calculate the average unit resale price
@@ -112,13 +146,32 @@ ggplotly(p, tooltip = c("month", "avg_resale_price"))
 
 \
 
-### Data Visualization
+### 
 
 ### **One-way ANOVA test on resale Price by Flat Type**
 
 ### **One-way ANOVA test on Unit Price / sqm by Flat Type**
 
-### **Resale Price by Town and Flat Type**
+### **Resale Price , Town，Flat Type，block and lease commence year, remain lease year, floor sqm**
+
+```{r}
+grouped_ggcorrmat(
+  data = resale_2022_345room,
+  cor.vars = 1:11,
+  type = "robust",
+  p.adjust.method = "holm",
+  plotgrid.args = list(ncol = 2),
+  ggcorrplot.args = list(outline.color = "black", 
+                         hc.order = TRUE,
+                         tl.cex = 10),
+  annotation.args = list(
+    tag_levels = "a",
+    title = "Correlogram for wine dataset",
+    subtitle = "The measures are: alcohol, sulphates, fixed acidity, citric acid, chlorides, residual sugar, density, free sulfur dioxide and volatile acidity",
+    caption = "Dataset: UCI Machine Learning Repository"
+  )
+)
+```
 
 ### visualization of uncertainty
 
