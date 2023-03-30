@@ -1,0 +1,207 @@
+---
+title: "TAKEHOME04 Putting Visual Analytics into Practical Use"
+author: "Chen Yiman"
+date: 29 Jan 2023
+execute:
+  eval: true
+  echo: true
+  warning: false
+format: html
+editor: visual
+listing: 
+  contents: posts
+---
+
+# Task
+
+In this take-home exercise, we are going to find the impact of COVID-19 towards international trading by using appropriate analytical visualisation techniques learned in **Lesson 6: It\'s About Time**. including proper interactive techniques which can be used to enhance user and data discovery experiences.
+
+# Data
+
+the data for this take-home exercise is from Merchandise Trade provided by Department of Statistics, Singapore (DOS) will be used. The data are available under the sub-section of Merchandise Trade by Region/Market. The study period is between **January 2020 to December 2022**.
+
+# 1 Loading library & reading data
+
+```{r}
+pacman::p_load(tidyverse, readxl, knitr, kableExtra, plotly, lubridate,scales, viridis, lubridate, ggthemes, gridExtra, readxl, knitr, data.table, CGPfunctions, ggHoriPlot, tidyverse,tidyr,janitor,tibble, plotly)
+
+```
+
+```{r}
+imports <- read_excel("data/outputFile.xlsx",sheet = "T1")
+exports <- read_excel("data/outputFile.xlsx",sheet = "T2")
+```
+
+```{r}
+kable(head(imports))
+
+```
+
+## Data Processing
+
+### 2.1 Transitting into Data Frame: import & export
+
+```{r}
+imports_transposed <- imports %>%
+  select(matches("Data|202[0-2]")) %>%    # select columns containing "Data", "2020", "2021", or "2022"
+  t() %>%                                # transpose the data frame
+  row_to_names(row_number = 1) %>% 
+  as.data.frame() %>%                    # convert to a data frame
+  tibble::rownames_to_column("timestamp") %>%  # add a timestamp column using row names
+  mutate(timestamp = lubridate::ymd(paste0(timestamp, "01"))) %>%   # convert timestamp to date format
+  arrange(timestamp)                     # sort by timestamp in ascending order
+```
+
+```{r}
+exports_transposed <- exports %>%
+  select(matches("Data|202[0-2]")) %>%    # select columns containing "Data", "2020", "2021", or "2022"
+  t() %>%                                # transpose the data frame
+  row_to_names(row_number = 1) %>% 
+  as.data.frame() %>%                    # convert to a data frame
+  tibble::rownames_to_column("timestamp") %>%  # add a timestamp column using row names
+  mutate(timestamp = lubridate::ymd(paste0(timestamp, "01"))) %>%   # convert timestamp to date format
+  arrange(timestamp)                     # sort by timestamp in ascending order
+```
+
+```{r}
+kable(head(imports_transposed))
+```
+
+### **2.2 Data Frame Pivot**
+
+```{r}
+imports_filtered <- imports %>% # Select columns that contain "Data" or "2020", "2021", or "2022"
+  select(matches("Data|202[0-2]"))
+
+imports_pivot <- imports_filtered %>% # Reshape the data by converting columns to rows
+  pivot_longer(
+    cols = !"Data Series", # Exclude the "Data Series" column from reshaping
+    names_to = "timestamp", # Set the column containing the old column names as "timestamp" in the new long format
+    values_to = "value" # Set the values in the old columns as "value" in the new long format
+  ) %>%
+  mutate(timestamp = lubridate::ymd(paste0(timestamp, "01"))) %>% # Convert "timestamp" column to a standard date format
+  arrange(timestamp) # Sort the data frame by "timestamp" column in ascending order
+
+```
+
+```{r}
+exports_filtered <- exports %>% # Select columns that contain "Data" or "2020", "2021", or "2022"
+  select(matches("Data|202[0-2]"))
+
+exports_pivot <- imports_filtered %>% # Reshape the data by converting columns to rows
+  pivot_longer(
+    cols = !"Data Series", # Exclude the "Data Series" column from reshaping
+    names_to = "timestamp", # Set the column containing the old column names as "timestamp" in the new long format
+    values_to = "value" # Set the values in the old columns as "value" in the new long format
+  ) %>%
+  mutate(timestamp = lubridate::ymd(paste0(timestamp, "01"))) %>% # Convert "timestamp" column to a standard date format
+  arrange(timestamp) # Sort the data frame by "timestamp" column in ascending order
+
+```
+
+```{r}
+kable(head(exports_pivot))
+```
+
+in this part, we applied R to form pivet table,as we can see there will be 3 columns, represent different value to each continent。
+
+# **2 Data Analysis and Visualizations**
+
+## **2.1 Horizon Plot: Average Import Prices from Different Countries (Jan 2020 to Dec 2022)**
+
+```{r}
+imports_pivot
+```
+
+```{r}
+imports_pivot %>% 
+  ggplot() +
+  geom_horizon(aes(x = timestamp, y=value), 
+               origin = "midpoint", 
+               horizonscale = 6)+
+  facet_grid(`Data Series`~.) +
+    theme_few() +
+  scale_fill_hcl(palette = 'RdBu') +
+  theme(panel.spacing.y=unit(0, "lines"), strip.text.y = element_text(
+    size = 5, angle = 0, hjust = 0),
+    legend.position = 'none',
+    axis.text.y = element_blank(),
+    axis.text.x = element_text(size=7),
+    axis.title.y = element_blank(),
+    axis.title.x = element_blank(),
+    axis.ticks.y = element_blank(),
+    panel.border = element_blank()
+    ) +
+    scale_x_date(expand=c(0,0), date_breaks = "3 month", date_labels = "%b%y") +
+  ggtitle('Average Import Prices from Different Countries (Jan 2020 to Dec 2022)')
+```
+
+From this import average price from different region from 2020 to 2022,(oringin set midpoint, which means red represent below midpoint, otherwise is blue) .The overall trend is the area of blue color is growing gradually.in the left side of the graph, most of the area is red, very limited is blue.This means the import price is growing with the covid ending.
+
+## **2.2 Total Import and Export by Continents**
+
+```{r}
+plot_ly(imports_transposed, x = ~timestamp, y = ~`Asia (Million Dollars)`, 
+        type = "scatter", mode = "lines", name="Asia", 
+        hovertemplate = "%{x}, %{y:.2f} Millon") %>%
+  add_lines(x=~timestamp, y=~`Europe (Million Dollars)`, 
+            name="EU", hovertemplate = "%{x}, %{y:.2f} Millon") %>%
+  add_lines(x=~timestamp, y=~`America (Million Dollars)`, 
+            name="America", hovertemplate = "%{x}, %{y:.2f} Millon") %>%
+  add_lines(x=~timestamp, y=~`Oceania (Million Dollars)`, 
+            name="Oceania", hovertemplate = "%{x}, %{y:.2f} Millon") %>%
+  add_lines(x=~timestamp, y=~`Africa (Million Dollars)`, 
+            name="Africa", hovertemplate = "%{x}, %{y:.2f} Millon") %>%
+  layout(title = "Total Imports by Continents over Time",
+         xaxis = list(title = "Date",
+                      tickformat = "%Y-%m",
+                      tickmode = "auto",
+                      nticks = 10),
+         yaxis = list(title = "Total Imports (Millons)"))
+```
+
+In this graph, we plot line to represent the trend of total imports value during covid19 grouped by continents.
+
+Generally speaking, Asia is the highest all the time, while Africa almost take the lowest all the way, although some time exceed Oceania. Other 3 take the middle seperately.
+
+Except for Afica, all of the continents' import value growed fluctuatly, as the growth of EU, America,Oceania are not obvious because of some main peak and drop.
+
+From time series,there are some main low points :2020-07, 2021-07.due to the specific economic and social circumstances, it seems that over a round, the trend will repeat.
+
+there are some main high points too :2021-03, 2022-01.Due to the specific economic and social circumstances, it seems that over a round, the trend will repeat too.
+
+```{r}
+plot_ly(exports_transposed, x = ~timestamp, y = ~`Asia (Million Dollars)`, 
+        type = "scatter", mode = "lines", name="Asia", 
+        hovertemplate = "%{x}, %{y:.2f} Millon") %>%
+  add_lines(x=~timestamp, y=~`Europe (Million Dollars)`, 
+            name="EU", hovertemplate = "%{x}, %{y:.2f} Millon") %>%
+  add_lines(x=~timestamp, y=~`America (Million Dollars)`, 
+            name="America", hovertemplate = "%{x}, %{y:.2f} Millon") %>%
+  add_lines(x=~timestamp, y=~`Oceania (Million Dollars)`, 
+            name="Oceania", hovertemplate = "%{x}, %{y:.2f} Millon") %>%
+  add_lines(x=~timestamp, y=~`Africa (Million Dollars)`, 
+            name="Africa", hovertemplate = "%{x}, %{y:.2f} Millon") %>%
+  layout(title = "Total Exports by Continents over Time",
+         xaxis = list(title = "Date",
+                      tickformat = "%Y-%m",
+                      tickmode = "auto",
+                      nticks = 10),
+         yaxis = list(title = "Total Exports (Millons)"))
+```
+
+Let's look at the trend of total emports value during covid19 grouped by continents.
+
+Generally speaking, Asia is the highest all the time, while Africa took the lowest all the way. although, America is higher than EU in most of time, they are fluctuating and catching up consistently.
+
+From time series,there are some main low points :2021-01,2022-05.Due to the specific economic and social circumstances, it seems that over a round, the trend will repeat.
+
+There are some main high points too :2020-07, 2021-02.Due to the specific economic and social circumstances, it seems that over a round, the trend will repeat too.
+
+# **3.0 Key Takeaways**
+
+From the import graph, we can see now Singapore still relied on Asia mostly, and with the covid developing, Asia is becoming more and more reliable, since other continents all show the unstable and non-growth during the past 3 years.
+
+From the emport graph, we can see now Singapore still relied on Asia market too, and with the covid developing, Asia is becoming more and more reliable market where Singapore can sell it goods to, since other continents all showed a unstable trend and non-growth during the past 3 years.
+
+But it is normal and scientific for economic fluctuating, since there are other factors like geography, culture,society.
