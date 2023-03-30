@@ -41,6 +41,8 @@ website:
             href: TAKEHOME/TAKEHOME02/takehome2.qmd
           - text: "Take-home Exercise 3"
             href: TAKEHOME/TAKEHOME03/TAKEHOME03.qmd
+          - text: "Take-home Exercise 4"
+            href: TAKEHOME/TAKEHOME04/TAKEHOME04.qmd
 
 format:
   html:
