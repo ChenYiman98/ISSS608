@@ -23,7 +23,7 @@ website:
           - text: "In-class Exercise 3"
             href: inclass/inclass03/inclass03.qmd
           - text: "In-class Exercise 4"
-            href: inclass/inclass04/inclass03.qmd
+            href: inclass/inclass03/inclass03.qmd
           - text: "In-class Exercise 5"
             href: inclass/inclass05/inclass05.qmd
           - text: "In-class Exercise 6"
