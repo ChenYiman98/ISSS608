@@ -1,0 +1,243 @@
+---
+title: "Takehome03"
+author: "Chen Yiman"
+date: 15 Feb 2023
+execute:
+  eval: true
+  echo: true
+  warning: false
+format: html
+editor: visual
+listing: 
+  contents: posts
+---
+
+# 1 Loading library & reading data
+
+```{r}
+pacman::p_load(dplyr, tidyverse, DT, ggplot2, ggiraph, 
+               ggstatsplot, patchwork, plotly, gganimate, 
+               ggthemes, corrplot, heatmaply,lubridate,scales,ggrepel,ggpubr)
+```
+
+```{r}
+resale_data <- read_csv("data/resale-flat-prices-based-on-registration-date-from-jan-2017-onwards.csv")
+
+DT::datatable(head(resale_data,20)) 
+```
+
+Convert the date format from YYYY-MM to Y-M-D:
+
+```{r}
+resale_data <- resale_data %>% 
+  mutate(month = as.Date(paste0(month, "-01"), format = "%Y-%m-%d"))
+```
+
+Convert the date format to Y-M-D, D is first day of each month:
+
+```{r}
+resale_345room_2022 <- resale_data %>% 
+  filter(flat_type %in% c("3 ROOM", "4 ROOM", "5 ROOM"), 
+         year(month) == '2022') %>%
+  mutate("unit_price_sqm" = resale_price/floor_area_sqm)
+```
+
+```{r}
+DT::datatable(head(resale_345room_2022))
+```
+
+# 2 Data Analysis
+
+## 2.1 Average Resale Price By Type
+
+```{r}
+# Group data by flat type
+resale_345room_2022_grouped <- resale_345room_2022 %>%
+  group_by(flat_type, month) %>%
+  summarise(resale_price = mean(resale_price)/1000)
+
+# Plot monthly trend by flat type
+ggplot(resale_345room_2022_grouped, aes(x = month, y = resale_price, color = flat_type)) +
+  geom_line() +
+  scale_x_date(date_labels = "%b", date_breaks = "1 months") +
+  labs(x = "Month", y = "Resale Price (SGD, thousands)", color = "Flat Type",title = "Monthly Resale Price Trend by Flat Type (2022)") +
+  theme_bw()
+```
+
+From this graph, the average resale price of 3 types, 5 room is the highest, then is the 4-room, the price of 3-room is the lowest.
+
+The price is rising while the area rises.
+
+## 2.2Average Resale Per SQM Price By Type
+
+```{r}
+# Group the data by flat type and month, and calculate the average unit resale price
+resale_avg <- resale_345room_2022 %>%
+  group_by(flat_type, month) %>%
+  summarise(avg_resale_price = mean(resale_price)/mean(floor_area_sqm))
+
+# Plot the line chart with dynamic tooltips using ggplot and plotly
+p <- ggplot(resale_avg, aes(x = month, y = avg_resale_price, color = flat_type, group = flat_type)) +
+  geom_line() +
+  scale_x_date(date_labels = "%b", date_breaks = "1 months") +
+  scale_y_continuous(labels = function(x) paste0(x/1000, "k")) +
+  labs(x = "Month", y = "Unit Price", title = "Average Unit Resale Price Trend by Flat Type (2022)") +
+  theme_bw()
+
+ggplotly(p, tooltip = c("month", "avg_resale_price"))
+```
+
+From this graph, the unit resale price of 3 types, 4 room is the overall highest, then is the 3-room, the price of 5-room is the lowest.
+
+From the time view, all of the 3 types grow gradually while there are some disrupted peak and drop especially around March,Auf and Nov.
+
+For the 4 ROOM type,it grew smoothly before July, then a suddenly drop in Aug. after that increased rapidly while drop again in Nov.
+
+For the 5 ROOM type,it grew fluctuately and didn't grow as much as other 2 types eventually. It rise and decrease alternatively every month, the sudden drop happened between 2 stages of increase May to July, Aug to Oct.
+
+For the 4 ROOM type,it grew fluctuately but saw a definite growth compared with the start of the year. There are 3 disruptive rises happend in March, June, September respectively.
+
+The price is rising while the area rises.
+
+## **2.3 Visualizing the uncertainty of point estimates: ggplot2 methods**
+
+```{r}
+my_sum <- resale_345room_2022 %>%
+  group_by(flat_type) %>%
+  summarise(
+    n=n(),
+    mean=mean(unit_price_sqm),
+    sd=sd(unit_price_sqm)
+    ) %>%
+  mutate(se=sd/sqrt(n-1))
+```
+
+```{r}
+ggplot(my_sum) +
+  geom_errorbar(
+    aes(x=flat_type, 
+        ymin=mean-se, 
+        ymax=mean+se), 
+    width=0.2, 
+    colour="black", 
+    alpha=0.9, 
+    size=0.5) +
+  geom_point(aes
+           (x=flat_type, 
+            y=mean), 
+           stat="identity", 
+           color="red",
+           size = 1.5,
+           alpha=1) +
+  ggtitle("Standard error of mean 
+          unit price by flat type")
+```
+
+## **2.4 The Distribution of Lease Commence Date of 2022 by Flat Type**
+
+```{r}
+resale_3room <- resale_345room_2022 %>%  
+  filter(flat_type == "3 ROOM")
+         
+gghistostats(
+  data = resale_3room ,
+  x = lease_commence_date,
+  type = "bayes",
+  test.value = 60,
+  xlab = "lease commence date",
+  title="The Distribution of Lease Commence Date for 3-Room (2022)",
+)
+```
+
+```{r}
+resale_4room <- resale_345room_2022  %>% 
+  filter(flat_type == "4 ROOM")
+         
+gghistostats(
+  data = resale_4room ,
+  x = lease_commence_date,
+  type = "bayes",
+  test.value = 60,
+  xlab = "lease commence date",
+  title="The Distribution of Lease Commence Date for 4-Room (2022)",
+)
+```
+
+```{r}
+resale_5room <- resale_345room_2022  %>%
+  filter(flat_type == "5 ROOM")
+         
+gghistostats(
+  data = resale_5room ,
+  x = lease_commence_date,
+  type = "bayes",
+  test.value = 60,
+  xlab = "lease commence date",
+  title="The Distribution of Lease Commence Date for 5-Room (2022)",
+)
+```
+
+## **2.5 One-way ANOVA test on Unit Price / sqm by Flat Type**
+
+```{r}
+p <- ggbetweenstats(
+  data = resale_345room_2022,
+  x = flat_type, 
+  y = unit_price_sqm,
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "s",
+  p.adjust.method = "fdr",
+  messages = FALSE
+)
+
+p + labs(title = "One-way ANOVA test on Unit Price / sqm by Flat Type", 
+         y = "Unit Price / sqm",
+         x = "Flat Type")
+```
+
+For the mean of unit price of 3 types flats, 4 room is the highest, then is the 3 room, then is the 5 room
+
+For the max of unit price of 3 types flats,4 room is the highest,while 3 and 5 is almost the same.
+
+For the width of unit price of 3 types flats,3 room is the wildest,then is the 5 room, last is the 4 room.
+
+## **2.6 Resale Price by Town and Flat Type**
+
+```{r}
+ggplot(resale_345room_2022, aes(x=town, y=resale_price/1000, fill=flat_type)) + 
+  geom_boxplot() + 
+  xlab("Town") + 
+  ylab("Resale Price (in '000s')") + 
+  scale_fill_manual(values=c("blue", "red", "green", "orange", "purple", "pink")) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5), 
+        plot.margin = unit(c(1, 5, 1, 1), "cm"), 
+        axis.title.x = element_text(size = 18), 
+        axis.title.y = element_text(size = 18),
+        legend.title = element_blank(),
+        legend.text = element_text(size = 18)) +
+  labs(title = "Resale Price by Town and Flat Type") +
+  scale_y_continuous(labels = function(x) paste0(x, "k")) +
+  coord_cartesian(clip = "off", ylim = c(0, 1400)) +
+  theme(plot.title = element_text(size = 18, face = "bold"),
+        axis.text.y = element_text(size = 18),
+        legend.position = "bottom",
+        legend.box = "horizontal",
+        legend.margin = margin(t = 0, r = 0, b = 0, l = 0)
+        ) 
+```
+
+For the average price range of 3 room type (75% - 25%), 5-room seems has a biggest range within different districts, which in graph shows the box is longer.
+
+while 3-room seems has a smallest range within different districts which in graph shows the box is shorter.
+
+# 3 Conclusion and takeaways
+
+## From Average Resale Per SQM Price By Type
+
+4- ROOM is the highest, this may related to customer's preference and population structure in Singapore property market.
+
+In Aug and December, there is a big drop on average resale per sqm price of all 3 types, we can find the root cause and come up with some action.
+
+In March, there will be a obview fluctuation on average resale per sqm price of all 3 types, we can find the root cause and come up with some action.
